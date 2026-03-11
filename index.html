@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Demo web page</title>
+    <style>
+      form {
+	  width: 350px;
+	  text-align: left;
+      }
+
+      label {
+	  display: inline-block;
+	  width: 10ch;
+      }
+
+      label[for="subscribe"] {
+	  width: auto;
+      }
+
+      select {
+	  margin-right: 100px;
+      }
+
+      input, select {
+	  margin-bottom: 5px;
+      }
+
+      button {
+	  margin: 5px auto;
+	  margin-right: 100px;
+      }
+      
+      table {
+	  border-collapse: collapse;
+      }
+      
+      th, td {
+	  border: 1px solid black;
+	  padding: 3px 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Demo Web page</h1>
+    <form>
+      <label for="name">Name:</label>
+      <input type="text" name="name" id="name" />
+      <label for="email">Email:</label>
+      <input type="email" name="email" id="email" />
+      <label for="company">Company:</label>
+      <input type="text" name="company" id="company" />
+      <label for="country">Country:</label>
+      <select id="country">
+	<option>Egypt</option>
+	<option>Iraq</option>
+	<option>KSA</option>
+	<option>Kuwait</option>
+	<option>Morocco</option>
+	<option>Palestine</option>
+	<option>Sudan</option>
+	<option>Syria</option>
+	<option>UAE</option>
+	<option>USA</option>
+      </select>
+      <label for="subscribe">Subscribe to newsletter:</label>
+      <input type="checkbox" id="subscribe" />
+      <button type="button">Submit</button>
+    </form>
+    <hr/>
+    <p>Submissions: <span id="count">0</span></p>
+    <table>
+      <tr>
+	<th>Name</th>
+	<th>Email</th>
+	<th>Company</th>
+	<th>Country</th>
+	<th>Subscribe</th>
+      </tr>
+    </table>
+    <script>
+      let counter = 0;
+      function insertData() {
+	  const row = document.createElement("tr");
+	  ["name", "email", "company", "country", "subscribe"].forEach(
+	      field => {
+		  const cell = document.createElement("td");
+		  const input = document.querySelector('#' + field);
+
+		  if (input.type == "checkbox") {
+		      cell.textContent = input.checked? "yes" : "no";
+		  } else {
+		      cell.textContent = input.value;
+		  }
+		  
+		  row.append(cell);
+	      }
+	  );
+	  document.querySelector("table").append(row);
+	  counter++;
+	  document.querySelector("#count").textContent = counter;
+      }
+
+      document.querySelector("button")
+    .addEventListener("click", insertData);
+    </script>
+  </body>
+</html>
