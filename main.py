@@ -56,7 +56,8 @@ def main(args, page):
             for field, value in zip(header, row):
                 enter_value(page, field, value)
             page.get_by_role("button", name=args.action).click()
-            time.sleep(args.delay)
+            page.wait_for_timeout(args.delay * 1000)
+            page.wait_for_load_state("networkidle")
 
     if args.pause:
         page.pause()
