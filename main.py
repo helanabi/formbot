@@ -31,9 +31,10 @@ def enter_value(page, field, value):
         page.get_by_placeholder(field)).first
 
     if control.get_attribute("type") == "checkbox":
-        if value == "yes":
+        value = value.strip().lower()
+        if value in ("yes", "y", "true", "1"):
             control.check()
-        elif value == "no":
+        elif value in ("no", "n", "false", "0"):
             control.uncheck()
         else:
             warn(field, value)
