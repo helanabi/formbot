@@ -22,9 +22,12 @@ def parse_args():
                         "Pass 0 to disable timeout (default: 30)")
     return parser.parse_args()
 
-def warn(name, value):
-    print(f"Warning: Unexpected value for '{name}': {value}. Skipping...",
-          file=sys.stderr)
+def warn(msg_or_name, value=''):
+    if not value:
+        msg = msg_or_name
+    else:
+        msg = f"unexpected value for '{msg_or_name}': {value}. Skipping."
+    print(msg, file=sys.stderr)
 
 def get_control(page, field):
     """Find a form control and its type in a page.
@@ -97,6 +100,11 @@ def main(args, page):
                 defaults.append(ctrl.input_value())
 
         for i, row in enumerate(reader):
+            if len(row) < len(header):
+                warn(f"short row at line: {i+2}. Some fields will be skipped.")
+            elif len(row) > len(header):
+                warn(f"long row at line: {i+2}. Some values will be dropped.")
+
             for field, value, default in zip(header, row, defaults):
                 enter_value(page, field, value, default)
             if not i:
