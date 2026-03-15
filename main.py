@@ -45,29 +45,29 @@ def enter_value(page, field, value):
     else:
         control.fill(value)
 
-def main(args):
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=not args.pause)
-        page = browser.new_page()
-        page.set_default_timeout(args.timeout * 1000)
-        page.goto(args.url)
+def main(args, page):
+    page.set_default_timeout(args.timeout * 1000)
+    page.goto(args.url)
 
-        with open(args.csv, newline='') as f:
-            reader = csv.reader(f)
-            header = next(reader)
-            for row in reader:
-                for field, value in zip(header, row):
-                    enter_value(page, field, value)
-                page.get_by_role("button", name=args.action).click()
-                time.sleep(args.delay)
+    with open(args.csv, newline='') as f:
+        reader = csv.reader(f)
+        header = next(reader)
+        for row in reader:
+            for field, value in zip(header, row):
+                enter_value(page, field, value)
+            page.get_by_role("button", name=args.action).click()
+            time.sleep(args.delay)
 
-        if args.pause:
-            page.pause()
-
-        browser.close()
+    if args.pause:
+        page.pause()
 
 if __name__ == "__main__":
-    try:
-        main(parse_args())
-    except TimeoutError as e:
-        print(e, file=sys.stderr)
+    with sync_playwright() as p:
+        args = parse_args()
+        try:
+            browser = p.chromium.launch(headless=not args.pause)
+            main(args, browser.new_page())
+        except TimeoutError as e:
+            print(e, file=sys.stderr)
+        finally:
+            browser.close()
