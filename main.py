@@ -14,7 +14,7 @@ def parse_args():
                         help="Action button name (default: submit)")
     parser.add_argument("--pause", "-p", action="store_true",
                         help="Run headed browser and pause at the end")
-    parser.add_argument("--delay", "-d", default=0, type=int,
+    parser.add_argument("--delay", "-d", default=0, type=float,
                         help="Add delay between submissions in seconds "
                         "(default: 0)")
     parser.add_argument("--timeout", "-t", default=30, type=float,
@@ -45,17 +45,37 @@ def enter_value(page, field, value):
     else:
         control.fill(value)
 
+def resolve_action_ctrl(page, text):
+    def is_visible(locator):
+        try:
+            locator.wait_for()
+        except TimeoutError:
+            return False
+        return True
+
+    for control in (page.get_by_role("button", name=text),
+                    page.get_by_role("link", name=text),
+                    page.get_by_text(text)):
+        if is_visible(control):
+            return control
+
 def main(args, page):
     page.set_default_timeout(args.timeout * 1000)
     page.goto(args.url)
-
+    
     with open(args.csv, newline='') as f:
         reader = csv.reader(f)
         header = next(reader)
-        for row in reader:
+        for i, row in enumerate(reader):
             for field, value in zip(header, row):
                 enter_value(page, field, value)
-            page.get_by_role("button", name=args.action).click()
+            if not i:
+                action_control = resolve_action_ctrl(page, args.action)
+                if not action_control:
+                    print(f"Error: Action control '{args.action}' not found",
+                          file=sys.stderr)
+                    sys.exit(1)
+            action_control.click()
             page.wait_for_timeout(args.delay * 1000)
             page.wait_for_load_state("networkidle")
 
