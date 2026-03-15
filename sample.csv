@@ -1,6 +1,7 @@
 name,email,company,country,subscribe
 Alice,alice@example.com,Acme,Canada,yes
-Bob,bob@example.com,Globex,USA,no
-Hassan,hassan@domain.com,Indie,Morocco,nah
-Yang,yang@mail.ch,Xiaomi,China,yes
+Bob,bob@example.com,Globex,USA,yes
+Hassan,hassan@domain.com,,Morocco,nah
+Yang,yang@mail.ch,Xiaomi,China,no
 Ahmad,ahmad@example.com,Samsung,Egypt
+Badr,badr@example.com,Vodafone,Lebanon,

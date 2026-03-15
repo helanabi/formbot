@@ -26,25 +26,45 @@ def warn(name, value):
     print(f"Warning: Unexpected value for '{name}': {value}. Skipping...",
           file=sys.stderr)
 
-def enter_value(page, field, value):
+def get_control(page, field):
+    """Find a form control and its type in a page.
+
+    Return a tuple of control type and its locator.
+    """
     control = page.get_by_label(field).or_(
         page.get_by_placeholder(field)).first
 
-    if control.get_attribute("type") == "checkbox":
-        value = value.strip().lower()
-        if value in ("yes", "y", "true", "1"):
-            control.check()
-        elif value in ("no", "n", "false", "0"):
-            control.uncheck()
+    tag = control.evaluate("e => e.tagName").lower()
+
+    if tag == "input":
+        return control.get_attribute("type"), control
+    else:
+        return tag, control
+
+def enter_value(page, field, value, default):
+    type_, ctrl = get_control(page, field)
+
+    if type_ == "checkbox":
+        true_values = ("yes", "y", "true", "1")
+        false_values = ("no", "n", "false", "0")
+
+        if value not in true_values + false_values:
+            warn(field, value or "*empty*")
+            value = default
+
+        if value in true_values:
+            ctrl.check()
         else:
-            warn(field, value)
-    elif control.evaluate("e => e.tagName") == "SELECT":
+            ctrl.uncheck()
+
+    elif type_ == "select":
         try:
-            control.select_option(value)
+            ctrl.select_option(value)
         except TimeoutError:
             warn(field, value)
+            ctrl.select_option(default)
     else:
-        control.fill(value)
+        ctrl.fill(value)
 
 def resolve_action_ctrl(page, text):
     def is_visible(locator):
@@ -67,9 +87,18 @@ def main(args, page):
     with open(args.csv, newline='') as f:
         reader = csv.reader(f)
         header = next(reader)
+        defaults = []
+
+        for field in header:
+            type_, ctrl = get_control(page, field)
+            if type_ == "checkbox":
+                defaults.append("yes" if ctrl.is_checked() else "no")
+            else:
+                defaults.append(ctrl.input_value())
+
         for i, row in enumerate(reader):
-            for field, value in zip(header, row):
-                enter_value(page, field, value)
+            for field, value, default in zip(header, row, defaults):
+                enter_value(page, field, value, default)
             if not i:
                 action_control = resolve_action_ctrl(page, args.action)
                 if not action_control:
