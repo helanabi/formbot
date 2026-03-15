@@ -4,7 +4,7 @@ import argparse
 import csv
 import sys
 import time
-from playwright.sync_api import sync_playwright, TimeoutError
+from playwright.sync_api import expect, sync_playwright, TimeoutError
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -108,6 +108,10 @@ def main(args, page):
             action_control.click()
             page.wait_for_timeout(args.delay * 1000)
             page.wait_for_load_state("networkidle")
+            try:
+                expect(action_control).to_be_enabled()
+            except AssertionError:
+                page.goto(args.url)
 
     if args.pause:
         page.pause()
