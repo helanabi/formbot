@@ -50,7 +50,8 @@ def enter_value(page, field, value, default):
     if type_ == "checkbox":
         true_values = ("yes", "y", "true", "1")
         false_values = ("no", "n", "false", "0")
-
+        value = value.strip().lower()
+        
         if value not in true_values + false_values:
             warn(field, value or "*empty*")
             value = default
