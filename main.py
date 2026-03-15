@@ -7,7 +7,7 @@ import time
 from playwright.sync_api import expect, sync_playwright, TimeoutError
 
 def parse_args():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog="formbot")
     parser.add_argument("csv", help="CSV data file")
     parser.add_argument("url", help="Web page URL")
     parser.add_argument("--action", "-a", default="submit",
