@@ -6,8 +6,6 @@ and missing controls
 - Add retry on failure
 - Field mapping config, example: `formbot --config mapping.yaml`
 - Add fs error handling
-- Add demo GIF
-- Add architecture explanation
-- Add “Real use cases” section
 - Add user-selectable wait strategy: --wait networkidle|url-change|
 selector:#success|fixed:2
+- Handle multiple action matches
