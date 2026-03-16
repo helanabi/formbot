@@ -19,8 +19,8 @@ forms from CSV data.
 - Chromium
 - Runtime dependencies:
 
-Archlinux      | Debian (and derivatives, e.g. Ubuntu)
------------------------------------------------------
+Archlinux      | Debian (and derivatives, e.g. Ubuntu) 
+---------------|--------------------------------------
 `icu`          | `libicu74`
 `libxml2`      | `libxml2`
 `libxslt`      | `libxslt1.1`
