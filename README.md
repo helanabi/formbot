@@ -3,6 +3,8 @@
 **Formbot** uses [Playwright](https://playwright.dev) to automate filling web
 forms from CSV data.
 
+![demo](./demo.gif)
+
 ## Features
 
 - Automatic waits for operations with a configurable timeout
