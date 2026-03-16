@@ -3,6 +3,11 @@
 **Formbot** uses [Playwright](https://playwright.dev) to automate filling web
 forms from CSV data.
 
+## Demo
+
+- `python -m http.server -b localhost`
+- `./formbot.py -p -t.5 sample.csv localhost:8000`
+
 ![demo](./demo.gif)
 
 ## Features
